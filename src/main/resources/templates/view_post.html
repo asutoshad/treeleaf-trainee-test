@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>View Post</title>
+</head>
+<body>
+<h1 th:text="${post.title}"></h1>
+<p th:text="${post.content}"></p>
+<img th:src="@{'/uploads/' + ${post.url}}" alt="Thumbnail">
+<h2>Comments</h2>
+<div th:each="comment : ${comments}"> <!-- Update this line -->
+    <p th:text="${comment.content}"></p>
+    <p th:text="'Comment by ' + ${comment.user.username}"></p> <!-- Display username -->
+</div>
+
+<!-- Display message if user is not authenticated -->
+<div sec:authorize="isAnonymous()">
+    <p>Please <a th:href="@{/login}">log in</a> to add a comment.</p>
+</div>
+
+<!-- Form to add comment -->
+<form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
+    <div>
+        <label for="content">Comment</label>
+        <textarea id="content" name="content" required></textarea>
+    </div>
+    <div>
+        <button type="submit">Add Comment</button>
+    </div>
+</form>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.trainee.java.config;
 
 import com.trainee.java.model.User;
 import com.trainee.java.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
@@ -27,9 +26,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/", "/home", "/login", "/logout", "/register").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // URL patterns restricted to ADMIN role
+                        .requestMatchers("/", "/home", "/login", "/logout", "/register", "/posts", "/posts/**").permitAll() // URLs accessible to all
+                        .anyRequest().authenticated() // All other URLs require authentication
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
@@ -49,7 +48,7 @@ public class SecurityConfig {
         return username -> {
             User user = userRepository.findByUsername(username);
             if (user == null) {
-                throw new UsernameNotFoundException("User not found");
+                throw new UsernameNotFoundException("User not found with username: " + username);
             }
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getUsername())
