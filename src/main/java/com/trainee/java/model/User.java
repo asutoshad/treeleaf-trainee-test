@@ -1,13 +1,15 @@
 package com.trainee.java.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
+@Table (name = "user")
 public class User {
 
     @Id
@@ -15,8 +17,15 @@ public class User {
     private Long id;
 
     private String username;
+
     private String password;
     private String roles;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Post> posts = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
 
 
 }

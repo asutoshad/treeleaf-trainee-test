@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Blog Posts</title>
+</head>
+<body>
+<h1>Blog Posts</h1>
+<a th:href="@{/posts/new}">Create New Post</a>
+<div th:each="post : ${posts}">
+    <h2 th:text="${post.title}"></h2>
+    <p th:text="${post.content}"></p>
+    <div th:if="${post.url}">
+        <img th:src="@{'/uploads/' + ${post.url}}" alt="Thumbnail">
+    </div>
+    <a th:href="@{/posts/{id}(id=${post.id})}">View</a>
+</div>
+</body>
+</html>
